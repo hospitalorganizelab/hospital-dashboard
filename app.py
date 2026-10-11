@@ -1,0 +1,12 @@
+import streamlit as st
+st.title("病院経営管理アプリ")
+beds = st.number_input("稼働可能病床数", min_value=1, value=40)
+patients = st.number_input("在院患者数", min_value=0, value=34)
+admissions = st.number_input("本日の入院数", min_value=0, value=5)
+emergency = st.number_input("緊急入院数", min_value=0, value=3)
+discharges = st.number_input("本日の退院数", min_value=0, value=4)
+st.metric("病床稼働率", f"{patients / beds * 100:.1f}%")
+st.metric("空床数", beds - patients)
+st.metric("緊急入院", emergency)
+st.metric("本日の退院", discharges)
+st.metric("入退院差引", admissions - discharges)
