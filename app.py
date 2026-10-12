@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 st.title("病院経営管理アプリ")
