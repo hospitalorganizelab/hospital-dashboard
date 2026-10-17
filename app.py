@@ -1,4 +1,3 @@
-
 import streamlit as st
 from supabase import create_client
 from datetime import date
@@ -6,19 +5,21 @@ from datetime import date
 st.set_page_config(
     page_title="病院経営管理アプリ",
     page_icon="🐢",
-    layout="wide"
+    layout="wide",
 )
 
 # ===== デザイン =====
 st.markdown("""
 <style>
 .stApp {
-    background: #F2F8FC;
+    background: linear-gradient(
+        180deg, #f5fbff 0%, #e4f5fc 65%, #c7eaf5 100%
+    );
     color: #24465A;
 }
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 150px;
+    padding-bottom: 130px;
     max-width: 1200px;
 }
 h1, h2, h3 {
@@ -28,7 +29,7 @@ h1, h2, h3 {
     background: #FFFFFF;
     border: 1px solid #D8EAF4;
     border-radius: 16px;
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 3px 12px #B6D8E522;
 }
 [data-testid="stMetricLabel"] {
@@ -56,7 +57,7 @@ hr {
     border-color: #D4E8F2;
 }
 
-/* 海のフッター */
+/* 海 */
 .ocean {
     position: fixed;
     bottom: 0;
@@ -90,7 +91,7 @@ hr {
     to { transform: translateX(-50%); }
 }
 
-/* ウミガメ本体 */
+/* ウミガメ */
 .turtle {
     position: absolute;
     bottom: 14px;
@@ -108,16 +109,16 @@ hr {
     transform-origin: center;
 }
 .front-left {
-    animation: paddle 0.9s ease-in-out infinite alternate;
+    animation: paddle .9s ease-in-out infinite alternate;
 }
 .front-right {
-    animation: paddle 0.9s ease-in-out infinite alternate-reverse;
+    animation: paddle .9s ease-in-out infinite alternate-reverse;
 }
 .back-left {
-    animation: paddle 0.75s ease-in-out infinite alternate-reverse;
+    animation: paddle .75s ease-in-out infinite alternate-reverse;
 }
 .back-right {
-    animation: paddle 0.75s ease-in-out infinite alternate;
+    animation: paddle .75s ease-in-out infinite alternate;
 }
 @keyframes paddle {
     from { transform: rotate(-17deg) translateY(-2px); }
@@ -134,39 +135,32 @@ hr {
   <div class="wave"></div>
   <div class="wave second"></div>
   <div class="turtle">
-    <svg viewBox="0 0 160 100"
-         width="125" height="76"
+    <svg viewBox="0 0 160 100" width="125" height="76"
          xmlns="http://www.w3.org/2000/svg">
-      <!-- 後ろのひれ -->
       <g fill="#62B9D0" stroke="#287E9E" stroke-width="1.7">
         <path class="flipper back-left"
           d="M48 56 Q24 63 23 77 Q25 84 43 72 L57 62Z"/>
         <path class="flipper back-right"
           d="M91 58 Q110 64 111 77 Q108 84 94 71 L84 63Z"/>
       </g>
-      <!-- 前ひれ -->
       <g fill="#70C8DC" stroke="#287E9E" stroke-width="1.8">
         <path class="flipper front-left"
           d="M57 51 Q35 35 21 43 Q12 50 28 61 L53 64Z"/>
         <path class="flipper front-right"
           d="M95 51 Q116 34 131 42 Q141 50 124 62 L99 64Z"/>
       </g>
-      <!-- 甲羅 -->
       <path d="M43 47 Q44 22 76 21 Q105 21 116 46
         Q114 65 82 70 Q52 68 43 47Z"
         fill="#168EB7" stroke="#155C7C" stroke-width="3"/>
-      <!-- 甲羅の模様 -->
       <g fill="none" stroke="#A9E5EE" stroke-width="2">
         <path d="M49 39 L65 31 L78 42 L67 61"/>
         <path d="M65 31 L89 29 L99 43 L90 64"/>
         <path d="M78 42 L99 43 L111 48"/>
         <path d="M67 61 L90 64"/>
       </g>
-      <!-- 頭 -->
       <path d="M108 39 Q119 25 135 31
         Q148 37 141 49 Q135 57 119 51 L108 49Z"
         fill="#B4E3E7" stroke="#287E9E" stroke-width="2"/>
-      <!-- 自然な大きさの目 -->
       <ellipse cx="134" cy="37" rx="2.7" ry="3.3" fill="#24485A"/>
       <circle cx="135" cy="36" r="0.9" fill="white"/>
       <path d="M138 48 Q142 49 144 46"
@@ -196,23 +190,29 @@ record_date = st.date_input("記録日", value=date.today())
 
 # ===== 病床管理 =====
 st.header("病床管理")
+
 beds = st.number_input(
-    "稼働可能病床数", min_value=1, value=40
+    "稼働可能病床数", min_value=1, value=40, step=1
 )
 patients = st.number_input(
-    "在院患者数", min_value=0,
-    max_value=int(beds), value=min(34, int(beds))
+    "在院患者数",
+    min_value=0,
+    max_value=int(beds),
+    value=min(34, int(beds)),
+    step=1
 )
 admissions = st.number_input(
-    "本日の入院数", min_value=0, value=5
+    "本日の入院数", min_value=0, value=5, step=1
 )
 emergency = st.number_input(
-    "緊急入院数", min_value=0,
+    "緊急入院数",
+    min_value=0,
     max_value=int(admissions),
-    value=min(3, int(admissions))
+    value=min(3, int(admissions)),
+    step=1
 )
 discharges = st.number_input(
-    "本日の退院数", min_value=0, value=4
+    "本日の退院数", min_value=0, value=4, step=1
 )
 
 occupancy = patients / beds * 100
@@ -231,19 +231,21 @@ st.divider()
 st.header("個室管理・収益")
 
 private_rooms = st.number_input(
-    "個室総数", min_value=0, value=8
+    "個室総数", min_value=0, value=8, step=1
 )
 occupied_rooms = st.number_input(
-    "使用中の個室数", min_value=0,
+    "使用中の個室数",
+    min_value=0,
     max_value=int(private_rooms),
-    value=min(6, int(private_rooms))
+    value=min(6, int(private_rooms)),
+    step=1
 )
 room_fee = st.number_input(
     "個室料（1室・1日あたり／円）",
     min_value=0, value=6000, step=500
 )
 charge_days = st.number_input(
-    "料金発生日数", min_value=0, value=1
+    "料金発生日数", min_value=0, value=1, step=1
 )
 
 room_occupancy = (
@@ -263,6 +265,7 @@ col2.metric("期間内の個室料収益", f"{period_revenue:,.0f}円")
 
 # ===== 保存 =====
 st.divider()
+st.header("日次記録の保存")
 
 if st.button("この日の記録を保存", type="primary"):
     try:
@@ -286,8 +289,8 @@ if st.button("この日の記録を保存", type="primary"):
         st.success("記録を保存しました。")
     except Exception:
         st.error(
-            "保存できませんでした。接続設定、テーブル、"
-            "アクセス権限を確認してください。"
+            "保存できませんでした。Supabaseの接続設定、"
+            "テーブル、列名、アクセス権限を確認してください。"
         )
 
 # ===== 過去の記録 =====
@@ -303,19 +306,23 @@ if st.button("過去30件を読み込む"):
             .limit(30)
             .execute()
         )
+
         if result.data:
             st.dataframe(
-                result.data, use_container_width=True
+                result.data,
+                use_container_width=True,
+                hide_index=True
             )
         else:
             st.info("まだ保存された記録はありません。")
     except Exception:
         st.error(
             "記録を読み込めませんでした。"
-            "アクセス権限を確認してください。"
+            "テーブル、列名、アクセス権限を確認してください。"
         )
 
+st.divider()
 st.caption(
     "試作版：テストデータ専用。"
-    "実際の患者情報は入力しないでください。"
+    "実際の患者情報や個人を特定できる情報は入力しないでください。"
 )
