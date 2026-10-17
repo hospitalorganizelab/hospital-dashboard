@@ -116,3 +116,62 @@ if st.button("過去30件を読み込む"):
         st.error("記録を読み込めませんでした。アクセス権限を確認してください。")
 
 st.caption("試作版：テストデータ専用。実際の患者情報は入力しないでください。")
+
+# 画面下を泳ぐ青いウミガメ
+st.markdown("""
+<style>
+.sea-turtle {
+    position: fixed;
+    bottom: 8px;
+    left: 0;
+    z-index: 999;
+    pointer-events: none;
+    animation: turtle-swim 24s linear infinite;
+}
+.sea-turtle svg {
+    width: 110px;
+    height: 75px;
+    overflow: visible;
+}
+@keyframes turtle-swim {
+    0%   { transform: translateX(-130px); }
+    100% { transform: translateX(110vw); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sea-turtle { animation: none; left: 10px; }
+}
+</style>
+<div class="sea-turtle">
+<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- ひれ -->
+  <g fill="#36AFCB" stroke="#167B9B" stroke-width="2">
+    <path d="M54 53 Q22 35 15 55 Q12 69 49 66 L65 61Z"/>
+    <path d="M83 58 Q102 76 92 91 Q80 99 69 66Z"/>
+    <path d="M109 54 Q133 42 140 58 Q143 69 111 68Z"/>
+  </g>
+  <!-- 頭 -->
+  <path d="M111 40 Q121 20 141 27 Q158 33 150 48
+           Q145 59 126 54 L110 52Z"
+        fill="#B9E8E8" stroke="#167B9B" stroke-width="2"/>
+  <!-- 目 -->
+  <ellipse cx="141" cy="35" rx="3.5" ry="4.5" fill="#183D50"/>
+  <circle cx="142" cy="34" r="1.2" fill="white"/>
+  <!-- 甲羅 -->
+  <path d="M38 49 Q44 22 77 22 Q104 22 119 43
+           L111 59 Q79 75 48 61Z"
+        fill="#159CC4" stroke="#145A7B" stroke-width="3"/>
+  <!-- 甲羅の模様 -->
+  <g fill="none" stroke="#C5F3F1" stroke-width="2">
+    <path d="M54 29 L69 43 L62 59"/>
+    <path d="M72 24 L82 43 L69 64"/>
+    <path d="M89 27 L96 43 L87 65"/>
+    <path d="M105 36 L108 48 L101 61"/>
+    <path d="M43 45 L62 43 L82 43 L105 48"/>
+  </g>
+  <!-- 口 -->
+  <path d="M143 48 Q148 51 151 47"
+        fill="none" stroke="#167B9B" stroke-width="1.5"
+        stroke-linecap="round"/>
+</svg>
+</div>
+""", unsafe_allow_html=True)
